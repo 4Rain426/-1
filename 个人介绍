@@ -1,0 +1,48 @@
+import React, { useState } from "react";
+import { Upload, Button, message, Card, Descriptions, Avatar } from "antd";
+import { UploadOutlined, UserOutlined } from "@ant-design/icons";
+
+const Profile = () => {
+  const [fileList, setFileList] = useState([]);
+
+  const props = {
+    fileList,
+    beforeUpload: (file) => {
+      // 只允许上传pdf/zip图片类作品集
+      const isAccept = file.type === "application/pdf" 
+        || file.type === "application/zip" 
+        || file.type.startsWith("image/");
+      if (!isAccept) {
+        message.error("只允许上传图片、PDF或zip类型文件");
+      }
+      return isAccept || Upload.LIST_IGNORE;
+    },
+    onChange: ({ fileList }) => setFileList(fileList),
+    // 上传接口地址，请按实际后端替换
+    action: "/api/uploadPortfolio",
+    // 如果要本地预览注释掉 action，用 beforeUpload 读文件
+    multiple: true,
+  };
+
+  return (
+    <Card
+      title={<><Avatar icon={<UserOutlined />} /> 徐思瑜Snow</>}
+      style={{ maxWidth: 500, margin: "30px auto" }}
+    >
+      <Descriptions column={1}>
+        <Descriptions.Item label="学号">2024014741</Descriptions.Item>
+        <Descriptions.Item label="专业">艺术与科技</Descriptions.Item>
+        <Descriptions.Item label="MBTI">INTJ</Descriptions.Item>
+        <Descriptions.Item label="个人期望">希望可以品尝各地的美食</Descriptions.Item>
+      </Descriptions>
+      <div style={{ marginTop: 24 }}>
+        <div style={{ marginBottom: 8, fontWeight: "bold" }}>作品集上传：</div>
+        <Upload {...props}>
+          <Button icon={<UploadOutlined />}>上传作品集文件</Button>
+        </Upload>
+      </div>
+    </Card>
+  );
+};
+
+export default Profile;
